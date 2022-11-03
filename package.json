@@ -16,8 +16,25 @@
   "contributes": {
     "commands": [
       {
-        "command": "rhdc.helloWorld",
-        "title": "Hello World"
+        "command": "rhdc.editJson",
+        "title": "Edit Dev Containers JSON"
+      }
+    ],
+    "configuration": [
+      {
+        "title": "Red Hat Dev Containers",
+        "properties": {
+          "rhdc.enablePodman": {
+            "type": "boolean",
+            "default": true,
+            "description": "Change Dev Container settings for compatibility with Podman"
+          },
+          "rhdc.enableSelinux": {
+            "type": "boolean",
+            "default": true,
+            "description": "Change Dev Container settings for compatibility with SELinux"
+          }
+        }
       }
     ]
   },
