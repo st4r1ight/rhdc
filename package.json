@@ -10,14 +10,14 @@
     "Other"
   ],
   "activationEvents": [
-    "onCommand:rhdc.helloWorld"
+    "onCommand:rhdc.editJson"
   ],
   "main": "./dist/extension.js",
   "contributes": {
     "commands": [
       {
         "command": "rhdc.editJson",
-        "title": "Edit Dev Containers JSON"
+        "title": "RHDC: Edit Dev Containers JSON"
       }
     ],
     "configuration": [

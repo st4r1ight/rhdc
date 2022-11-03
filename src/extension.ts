@@ -1,7 +1,9 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
-import { parse, assign, stringify } from 'comment-json';
-import { readFileSync } from 'fs';
+import { parse, assign, stringify, CommentJSONValue } from 'comment-json';
+import { channel } from 'diagnostics_channel';
+import { existsSync, fstat, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { chdir, cwd } from 'process';
 import * as vscode from 'vscode';
 
 interface ExtensionConfig {
@@ -24,7 +26,23 @@ export function activate(context: vscode.ExtensionContext) {
 	// Now provide the implementation of the command with registerCommand
 	// The commandId parameter must match the command field in package.json
 	let editJsonCommand = vscode.commands.registerCommand('rhdc.editJson', () => {
-		editJson(enableSelinux, enablePodman)
+		let workspaceFolders = vscode.workspace.workspaceFolders
+		if (workspaceFolders) {
+			let success = false
+			workspaceFolders.forEach((it) => {
+				let result = editJson(enableSelinux, enablePodman, it.uri.fsPath)
+				if (result) success = true
+			})
+
+			if (success) {
+				vscode.window.showInformationMessage("RHDC completed successfully")
+			} else {
+				vscode.window.showErrorMessage("None of your workspaces had Dev Container JSON files in them!")
+			}
+
+		} else {
+			vscode.window.showErrorMessage('RHDC error: You have not opened a workspace!')
+		}
 	});
 
 	context.subscriptions.push(editJsonCommand);
@@ -33,8 +51,17 @@ export function activate(context: vscode.ExtensionContext) {
 // This method is called when your extension is deactivated
 export function deactivate() {}
 
-function editJson(selinux: boolean = true, podman: boolean = true, path: string = './.devcontainer/devcontainer.json') {
-	let jsonObject = parse(readFileSync(path).toString())
+function editJson(selinux: boolean = true, podman: boolean = true, path: string): boolean {
+	const containerFile = './.devcontainer/devcontainer.json'
+	
+	chdir(path)
+	if (!existsSync(containerFile)) {
+		return false
+	}
+	
+	let jsonObject = parse(readFileSync('./.devcontainer/devcontainer.json').toString())
+	if (!jsonObject) { throw Error("Error parsing Dev Containers JSON file") }
+	 
 	
 	let runArgs = []
 	let newJson: Record<string, any> = {}
@@ -44,12 +71,13 @@ function editJson(selinux: boolean = true, podman: boolean = true, path: string 
 		runArgs.push("--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z")
 	}
 	if (podman) {
-		newJson['containerUser'] = jsonObject?['remoteUser']:
+		newJson['containerUser'] = 'vscode'
 		runArgs.push('--userns=keep-id')
 	}
 	newJson['runArgs'] = runArgs
 
 	let newJsonObject = assign(newJson, jsonObject)
 
-	return stringify(newJsonObject, null, 2)
+	writeFileSync(containerFile, stringify(newJsonObject, null, 2))
+	return true
 }
