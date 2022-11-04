@@ -33,6 +33,11 @@
             "type": "boolean",
             "default": true,
             "description": "Change Dev Container settings for compatibility with SELinux"
+          },
+          "rhdc.workspacePath": {
+            "type": "string",
+            "default": "/workspaces/${localWorkspaceFolderBasename}",
+            "description": "Controls the folder that the workspace is mounted to in the container. Supports any substitutions Dev Containers supports." 
           }
         }
       }
