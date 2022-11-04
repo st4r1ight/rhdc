@@ -77,7 +77,7 @@ function editJson(selinux: boolean, podman: boolean, path: string, workspacePath
 		runArgs.push("--volume=${localWorkspaceFolder}:" + workspacePath + ':Z')
 	}
 	if (podman) {
-		newJson['containerUser'] = 'vscode'
+		newJson['containerUser'] = jsonObject['remoteUser'] ?? 'root'
 		runArgs.push('--userns=keep-id')
 	}
 	newJson['runArgs'] = runArgs
