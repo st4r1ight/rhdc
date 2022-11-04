@@ -19,7 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
 	// Parse RHDC config
 	// See package.json for more information
 	let config = vscode.workspace.getConfiguration('rhdc')
-	let enablePodman = config.get<boolean>("rhdc.enablePodman") ?? true
+	let enablePodman = config.get<boolean>("rhdc.enableRootlessPodman") ?? true
 	let enableSelinux = config.get<boolean>("rhdc.enableSelinux") ?? true
 	let workspacePath = config.get<string>("rhdc.workspacePath") ?? "/workspaces/${localWorkspaceFolderBasename}"
 

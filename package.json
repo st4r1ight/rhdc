@@ -24,10 +24,10 @@
       {
         "title": "Red Hat Dev Containers",
         "properties": {
-          "rhdc.enablePodman": {
+          "rhdc.enableRootlessPodman": {
             "type": "boolean",
             "default": true,
-            "description": "Change Dev Container settings for compatibility with Podman"
+            "description": "Change Dev Container settings for compatibility with rootless Podman. This setting should be DISABLED if your Podman is rootful." 
           },
           "rhdc.enableSelinux": {
             "type": "boolean",
