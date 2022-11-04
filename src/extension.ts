@@ -2,6 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import { parse, assign, stringify, CommentJSONValue, CommentArray, CommentObject } from 'comment-json';
 import { existsSync, fstat, readdirSync, readFileSync, writeFileSync } from 'fs';
+import { chdir } from 'process';
 import * as vscode from 'vscode';
 
 interface ExtensionConfig {
